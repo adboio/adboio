@@ -1,23 +1,38 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
+import { profile } from "@/data/profile";
 import "./globals.css";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  metadataBase: new URL(profile.url),
+  title: {
+    default: profile.name,
+    template: `%s | ${profile.name}`,
+  },
+  description: profile.description,
+  openGraph: {
+    title: `${profile.name}`,
+    description: profile.description ?? "",
+    url: profile.url,
+    siteName: `${profile.name}`,
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  twitter: {
+    title: `${profile.name}`,
+    card: "summary_large_image",
+  },
 };
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
-});
 
 export default function RootLayout({
   children,
@@ -26,15 +41,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+      <body
+        className="min-h-screen bg-background antialiased max-w-5xl mx-auto py-8 px-6"
+      >
+        {children}
       </body>
     </html>
   );
