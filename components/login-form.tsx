@@ -36,7 +36,9 @@ export function LoginForm() {
   return (
     <div className="border border-border p-6 font-mono">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2 uppercase tracking-wider">Login</h1>
+        <h1 className="text-2xl font-bold mb-2 uppercase tracking-wider">
+          Login
+        </h1>
         <p className="text-sm text-muted-foreground">
           Enter your credentials to access admin
         </p>
@@ -44,7 +46,10 @@ export function LoginForm() {
 
       <form onSubmit={handleLogin} className="space-y-6">
         <div>
-          <label htmlFor="email" className="block text-xs font-bold mb-2 uppercase tracking-wider">
+          <label
+            htmlFor="email"
+            className="block text-xs font-bold mb-2 uppercase tracking-wider"
+          >
             Email
           </label>
           <input
@@ -59,7 +64,10 @@ export function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-xs font-bold mb-2 uppercase tracking-wider">
+          <label
+            htmlFor="password"
+            className="block text-xs font-bold mb-2 uppercase tracking-wider"
+          >
             Password
           </label>
           <input

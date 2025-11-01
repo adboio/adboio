@@ -1,15 +1,15 @@
 "use client";
 
-import { BuildLogEditor } from '@/components/buildlog-editor';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { BuildLogEditor } from "@/components/buildlog-editor";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function BuildLogNewPage() {
   const router = useRouter();
 
   const handleSuccess = () => {
     // Redirect to list page after successful creation
-    router.push('/admin/buildlog');
+    router.push("/admin/buildlog");
   };
 
   return (

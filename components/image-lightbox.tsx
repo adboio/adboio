@@ -11,7 +11,12 @@ interface ImageLightboxProps {
   onClose: () => void;
 }
 
-export function ImageLightbox({ images, initialIndex, isOpen, onClose }: ImageLightboxProps) {
+export function ImageLightbox({
+  images,
+  initialIndex,
+  isOpen,
+  onClose,
+}: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
   useEffect(() => {

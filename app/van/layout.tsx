@@ -4,10 +4,6 @@ export const metadata: Metadata = {
   title: "van log | adboio",
 };
 
-export default function VanLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function VanLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

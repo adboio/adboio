@@ -3,7 +3,10 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Plus, Loader2, X } from "lucide-react";
-import { convertImageToJpeg, isSupportedImageFormat } from "@/lib/image-conversion";
+import {
+  convertImageToJpeg,
+  isSupportedImageFormat,
+} from "@/lib/image-conversion";
 import Image from "next/image";
 
 export interface UploadedImage {
@@ -17,7 +20,7 @@ export interface UploadedImage {
 
 interface ImageUploadProps {
   images: UploadedImage[];
-  onImagesChange: (images: UploadedImage[]) => void;
+  onImagesChange: (images: UploadedImage[] | ((prevImages: UploadedImage[]) => UploadedImage[])) => void;
   maxImages?: number;
   disabled?: boolean;
   onSuccess?: (message: string) => void;
@@ -46,8 +49,8 @@ export function ImageUpload({
 
       // Create all temp images upfront
       const tempImages: UploadedImage[] = filesToUpload
-        .filter(file => isSupportedImageFormat(file))
-        .map(file => ({
+        .filter((file) => isSupportedImageFormat(file))
+        .map((file) => ({
           url: URL.createObjectURL(file),
           path: "",
           name: file.name,
@@ -66,11 +69,11 @@ export function ImageUpload({
           // Validate file type
           if (!isSupportedImageFormat(file)) {
             onError?.(
-              `${file.name}: Unsupported format. Please use JPEG, PNG, WebP, AVIF, HEIC, or HEIF`
+              `${file.name}: Unsupported format. Please use JPEG, PNG, WebP, AVIF, HEIC, or HEIF`,
             );
             // Remove invalid temp image
-            onImagesChange((currentImages) =>
-              currentImages.filter((img) => img.tempId !== tempImage?.tempId)
+            onImagesChange((currentImages: UploadedImage[]) =>
+              currentImages.filter((img: UploadedImage) => img.tempId !== tempImage?.tempId),
             );
             return;
           }
@@ -106,8 +109,8 @@ export function ImageUpload({
               const uploadedFile = result.uploaded[0];
 
               // Replace temporary image with uploaded image
-              onImagesChange((currentImages) =>
-                currentImages.map((img) =>
+              onImagesChange((currentImages: UploadedImage[]) =>
+                currentImages.map((img: UploadedImage) =>
                   img.tempId === tempImage.tempId
                     ? {
                         url: uploadedFile.url,
@@ -115,26 +118,24 @@ export function ImageUpload({
                         name: uploadedFile.name,
                         isUploading: false,
                       }
-                    : img
-                )
+                    : img,
+                ),
               );
               onSuccess?.(`${file.name} uploaded successfully`);
             }
           } catch (err) {
             // Remove temporary image on error
-            onImagesChange((currentImages) =>
-              currentImages.filter((img) => img.tempId !== tempImage.tempId)
+            onImagesChange((currentImages: UploadedImage[]) =>
+              currentImages.filter((img: UploadedImage) => img.tempId !== tempImage.tempId),
             );
 
-            onError?.(
-              `Failed to upload ${file.name}. Please try again.`
-            );
+            onError?.(`Failed to upload ${file.name}. Please try again.`);
             console.error("Upload error:", err);
           }
-        })
+        }),
       );
     },
-    [images, maxImages, onImagesChange, onSuccess, onError]
+    [images, maxImages, onImagesChange, onSuccess, onError],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -159,7 +160,7 @@ export function ImageUpload({
 
       onImagesChange(updatedImages);
     },
-    [images, onImagesChange]
+    [images, onImagesChange],
   );
 
   const canAddMore = images.length < maxImages && !disabled;

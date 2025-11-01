@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { getBuildLogEntries, type BuildLogEntry } from '@/lib/supabase/queries';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import { getBuildLogEntries, type BuildLogEntry } from "@/lib/supabase/queries";
+import Image from "next/image";
+import Link from "next/link";
 
 export function BuildLogSection() {
   const [entries, setEntries] = useState<BuildLogEntry[]>([]);
@@ -38,7 +38,9 @@ export function BuildLogSection() {
         <h2 className="text-lg font-bold mb-6 uppercase tracking-wider">
           Campervan Log
         </h2>
-        <p className="text-sm text-muted-foreground">No entries yet. Check back soon!</p>
+        <p className="text-sm text-muted-foreground">
+          No entries yet. Check back soon!
+        </p>
       </div>
     );
   }
@@ -50,10 +52,7 @@ export function BuildLogSection() {
       </h2>
       {totalCount > 4 && (
         <p className="text-sm text-muted-foreground mb-6">
-          <Link
-            href="/van"
-            className="underline hover:no-underline"
-          >
+          <Link href="/van" className="underline hover:no-underline">
             [view all {totalCount} entries →]
           </Link>
         </p>
@@ -65,24 +64,34 @@ export function BuildLogSection() {
           const firstImage = entry.build_images?.[0]?.path;
 
           // Format date without timezone conversion
-          const formattedDate = entry.date ? (() => {
-            const dateStr = entry.date.split('T')[0];
-            const [year, month, day] = dateStr.split('-');
-            const date = new Date(Number(year), Number(month) - 1, Number(day));
-            return date.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            });
-          })() : null;
+          const formattedDate = entry.date
+            ? (() => {
+                const dateStr = entry.date.split("T")[0];
+                const [year, month, day] = dateStr.split("-");
+                const date = new Date(
+                  Number(year),
+                  Number(month) - 1,
+                  Number(day),
+                );
+                return date.toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                });
+              })()
+            : null;
 
           return (
-            <Link key={entry.id} href={`/van/${entry.id}`} className="group relative">
+            <Link
+              key={entry.id}
+              href={`/van/${entry.id}`}
+              className="group relative"
+            >
               <div className="border border-border overflow-hidden aspect-square">
                 {firstImage ? (
                   <Image
                     src={firstImage}
-                    alt={entry.title || 'Build log entry'}
+                    alt={entry.title || "Build log entry"}
                     width={300}
                     height={300}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
@@ -99,9 +108,7 @@ export function BuildLogSection() {
                 {entry.title}
               </p>
               {formattedDate && (
-                <p className="text-xs text-muted-foreground">
-                  {formattedDate}
-                </p>
+                <p className="text-xs text-muted-foreground">{formattedDate}</p>
               )}
             </Link>
           );

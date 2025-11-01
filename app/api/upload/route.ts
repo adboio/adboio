@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,28 +13,22 @@ export async function POST(request: NextRequest) {
 
     if (authError || !user) {
       if (authError) console.error(authError);
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Parse form data
     const formData = await request.formData();
-    const files = formData.getAll('files') as File[];
+    const files = formData.getAll("files") as File[];
 
     if (!files || files.length === 0) {
-      return NextResponse.json(
-        { error: 'No files provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No files provided" }, { status: 400 });
     }
 
     // Validate file count
     if (files.length > 10) {
       return NextResponse.json(
-        { error: 'Maximum 10 files allowed' },
-        { status: 400 }
+        { error: "Maximum 10 files allowed" },
+        { status: 400 },
       );
     }
 
@@ -43,8 +37,8 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       // Validate file type
-      if (!file.type.startsWith('image/')) {
-        errors.push({ file: file.name, error: 'Only image files allowed' });
+      if (!file.type.startsWith("image/")) {
+        errors.push({ file: file.name, error: "Only image files allowed" });
         continue;
       }
 
@@ -53,10 +47,10 @@ export async function POST(request: NextRequest) {
 
       // Upload to Supabase Storage
       const { data, error } = await supabase.storage
-        .from('build-images')
+        .from("build-images")
         .upload(fileName, file, {
-          contentType: 'image/jpeg',
-          cacheControl: '3600',
+          contentType: "image/jpeg",
+          cacheControl: "3600",
           upsert: false,
         });
 
@@ -80,10 +74,7 @@ export async function POST(request: NextRequest) {
       errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json(
-      { error: 'Upload failed' },
-      { status: 500 }
-    );
+    console.error("Upload error:", error);
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

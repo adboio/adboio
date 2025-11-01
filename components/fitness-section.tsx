@@ -1,8 +1,16 @@
-'use client'
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+} from "recharts";
 import { macroTargets, recipes } from "@/data/fitness";
 import Link from "next/link";
 
@@ -40,7 +48,7 @@ export function FitnessSection() {
           data.map((row) => ({
             date: row.date,
             weight: row.weight_value,
-          }))
+          })),
         );
       }
       setLoading(false);
@@ -65,7 +73,7 @@ export function FitnessSection() {
             carbs: row.carbs ?? 0,
             fat: row.fat ?? 0,
             description: row.description,
-          }))
+          })),
         );
       }
       setFoodLoading(false);
@@ -74,7 +82,7 @@ export function FitnessSection() {
   }, []);
 
   const sortedFood = [...foodData].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
   const latestEntry = sortedFood.find((f) => f.calories && f.calories !== 0);
 
@@ -86,7 +94,11 @@ export function FitnessSection() {
         </h2>
         <p className="text-sm text-muted-foreground">
           [open source fitness tracking.{" "}
-          <a href="https://www.adboio.fit/log" target="_blank" className="underline hover:no-underline">
+          <a
+            href="https://www.adboio.fit/log"
+            target="_blank"
+            className="underline hover:no-underline"
+          >
             see more here]
           </a>
         </p>
@@ -98,28 +110,29 @@ export function FitnessSection() {
         <div className="border border-border p-4 pb-2">
           <h3 className="text-sm font-bold mb-4">weight progress</h3>
           {loading ? (
-            <div className="text-center text-sm text-muted-foreground py-8">Loading...</div>
+            <div className="text-center text-sm text-muted-foreground py-8">
+              Loading...
+            </div>
           ) : (
             <div className="w-full aspect-[2/1]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={weightData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                  <XAxis
-                    dataKey="date"
-                    tick={false}
-                    stroke="currentColor"
-                  />
+                <LineChart
+                  data={weightData}
+                  margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
+                >
+                  <XAxis dataKey="date" tick={false} stroke="currentColor" />
                   <YAxis
-                    tick={{ fontSize: 11, fontFamily: 'monospace' }}
+                    tick={{ fontSize: 11, fontFamily: "monospace" }}
                     domain={[190, 270]}
                     stroke="currentColor"
                     ticks={[190, 210, 230, 250, 270]}
                   />
                   <Tooltip
                     contentStyle={{
-                      fontFamily: 'monospace',
-                      fontSize: '11px',
-                      border: '1px solid currentColor',
-                      backgroundColor: '#ffffff'
+                      fontFamily: "monospace",
+                      fontSize: "11px",
+                      border: "1px solid currentColor",
+                      backgroundColor: "#ffffff",
                     }}
                   />
                   <ReferenceLine
@@ -127,12 +140,12 @@ export function FitnessSection() {
                     stroke="currentColor"
                     strokeDasharray="3 3"
                     label={{
-                      value: 'target',
-                      position: 'insideBottomLeft',
-                      fill: 'currentColor',
+                      value: "target",
+                      position: "insideBottomLeft",
+                      fill: "currentColor",
                       fontSize: 11,
-                      fontFamily: 'monospace',
-                      dy: -5
+                      fontFamily: "monospace",
+                      dy: -5,
                     }}
                   />
                   <Line
@@ -140,7 +153,7 @@ export function FitnessSection() {
                     dataKey="weight"
                     stroke="currentColor"
                     strokeWidth={1.5}
-                    dot={{ fill: 'currentColor', r: 2 }}
+                    dot={{ fill: "currentColor", r: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -154,7 +167,9 @@ export function FitnessSection() {
             latest macros {latestEntry && `(${latestEntry.date})`}
           </h3>
           {foodLoading ? (
-            <div className="text-center text-sm text-muted-foreground py-8">Loading...</div>
+            <div className="text-center text-sm text-muted-foreground py-8">
+              Loading...
+            </div>
           ) : latestEntry ? (
             <div className="space-y-3 font-mono text-sm">
               <MacroBar
@@ -189,7 +204,9 @@ export function FitnessSection() {
               )}
             </div>
           ) : (
-            <div className="text-center text-sm text-muted-foreground py-8">No entries found</div>
+            <div className="text-center text-sm text-muted-foreground py-8">
+              No entries found
+            </div>
           )}
 
           {/* Description Popup */}
@@ -248,7 +265,15 @@ export function FitnessSection() {
   );
 }
 
-function MacroBar({ label, value, target }: { label: string; value: number; target: number }) {
+function MacroBar({
+  label,
+  value,
+  target,
+}: {
+  label: string;
+  value: number;
+  target: number;
+}) {
   const percentage = Math.min((value / target) * 100, 100);
 
   return (

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { FitnessSection } from "@/components/fitness-section";
 import { CampervanSection } from "@/components/campervan-section";
@@ -22,15 +22,11 @@ export default function Home() {
             <AvatarFallback>{profile.initials}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold mb-2">
-              {profile.name}
-            </h1>
+            <h1 className="text-2xl font-bold mb-2">{profile.name}</h1>
             <p className="text-sm text-muted-foreground mb-3">
               [{profile.description}]
             </p>
-            <p className="text-sm leading-relaxed">
-              {profile.summary}
-            </p>
+            <p className="text-sm leading-relaxed">{profile.summary}</p>
           </div>
         </div>
       </section>
@@ -42,10 +38,7 @@ export default function Home() {
         </h2>
         <div className="space-y-6">
           {work.map((job) => (
-            <div
-              key={job.company}
-              className="border-l-2 border-border pl-4"
-            >
+            <div key={job.company} className="border-l-2 border-border pl-4">
               <div className="flex items-start gap-3 mb-2">
                 <div className="w-8 h-8 border border-border flex-shrink-0">
                   <Image
@@ -60,17 +53,23 @@ export default function Home() {
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="text-sm font-bold">
                       {job.company}
-                      {job.badges && job.badges.map((badge, i) => (
-                        <span key={i} className="ml-2 text-xs text-muted-foreground font-normal">
-                          [{badge}]
-                        </span>
-                      ))}
+                      {job.badges &&
+                        job.badges.map((badge, i) => (
+                          <span
+                            key={i}
+                            className="ml-2 text-xs text-muted-foreground font-normal"
+                          >
+                            [{badge}]
+                          </span>
+                        ))}
                     </h3>
                     <span className="text-xs text-muted-foreground whitespace-nowrap">
                       {job.start} - {job.end ?? "Present"}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-1">{job.title}</p>
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {job.title}
+                  </p>
                   <p className="text-sm leading-relaxed">{job.description}</p>
                 </div>
               </div>
@@ -131,7 +130,9 @@ export default function Home() {
                     {project.dates}
                   </span>
                 </div>
-                <p className="text-sm leading-relaxed mb-3">{project.description}</p>
+                <p className="text-sm leading-relaxed mb-3">
+                  {project.description}
+                </p>
                 {project.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-2 text-xs">
                     {project.technologies.map((tech) => (
@@ -164,19 +165,20 @@ export default function Home() {
             or let&apos;s connect elsewhere:
           </p>
           <div className="flex gap-4 text-sm">
-            {Object.entries(socialLinks).map(([key, social]) => (
-              social.navbar && (
-                <a
-                  key={key}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  [{social.name}]
-                </a>
-              )
-            ))}
+            {Object.entries(socialLinks).map(
+              ([key, social]) =>
+                social.navbar && (
+                  <a
+                    key={key}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    [{social.name}]
+                  </a>
+                ),
+            )}
           </div>
         </div>
       </section>

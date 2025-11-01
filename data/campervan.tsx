@@ -17,7 +17,7 @@ export const campervanData = {
     {
       image: "/campervan/cabinets.jpeg",
       caption: "cabinets suck",
-      link: 'https://www.instagram.com/p/C8TNpH4J6No/?img_index=6'
+      link: "https://www.instagram.com/p/C8TNpH4J6No/?img_index=6",
     },
   ],
 };

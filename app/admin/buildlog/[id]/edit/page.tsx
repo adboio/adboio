@@ -1,10 +1,10 @@
 "use client";
 
-import { BuildLogEditor } from '@/components/buildlog-editor';
-import { getBuildLogEntry, type BuildLogEntry } from '@/lib/supabase/queries';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { BuildLogEditor } from "@/components/buildlog-editor";
+import { getBuildLogEntry, type BuildLogEntry } from "@/lib/supabase/queries";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function BuildLogEditPage() {
   const params = useParams();
@@ -14,12 +14,18 @@ export default function BuildLogEditPage() {
 
   useEffect(() => {
     async function fetchEntry() {
-      if (!params.id || typeof params.id !== 'string') {
+      if (!params.id || typeof params.id !== "string") {
         setLoading(false);
         return;
       }
 
-      const data = await getBuildLogEntry(params.id);
+      const entryId = parseInt(params.id, 10);
+      if (isNaN(entryId)) {
+        setLoading(false);
+        return;
+      }
+
+      const data = await getBuildLogEntry(entryId);
       setEntry(data);
       setLoading(false);
     }
@@ -29,7 +35,7 @@ export default function BuildLogEditPage() {
 
   const handleSuccess = () => {
     // Redirect to list page after successful update
-    router.push('/admin/buildlog');
+    router.push("/admin/buildlog");
   };
 
   if (loading) {

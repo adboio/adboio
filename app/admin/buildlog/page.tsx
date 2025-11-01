@@ -1,9 +1,9 @@
 "use client";
 
-import { getBuildLogEntries, type BuildLogEntry } from '@/lib/supabase/queries';
-import { BuildLogList } from '@/components/buildlog-list';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { getBuildLogEntries, type BuildLogEntry } from "@/lib/supabase/queries";
+import { BuildLogList } from "@/components/buildlog-list";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function BuildLogAdminPage() {
   const [entries, setEntries] = useState<BuildLogEntry[]>([]);
@@ -63,7 +63,11 @@ export default function BuildLogAdminPage() {
           </Link>
         </div>
       ) : (
-        <BuildLogList entries={entries} showThumbnails={true} showEditButton={true} />
+        <BuildLogList
+          entries={entries}
+          showThumbnails={true}
+          showEditButton={true}
+        />
       )}
     </main>
   );

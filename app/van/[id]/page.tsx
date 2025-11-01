@@ -22,7 +22,13 @@ export default function BuildLogEntryPage() {
         return;
       }
 
-      const data = await getBuildLogEntry(params.id);
+      const entryId = parseInt(params.id, 10);
+      if (isNaN(entryId)) {
+        setLoading(false);
+        return;
+      }
+
+      const data = await getBuildLogEntry(entryId);
       setEntry(data);
       setLoading(false);
     }
@@ -84,9 +90,13 @@ export default function BuildLogEntryPage() {
           <p className="text-sm text-muted-foreground mb-3">
             {(() => {
               // Parse date string directly without timezone conversion
-              const dateStr = entry.date.split('T')[0];
-              const [year, month, day] = dateStr.split('-');
-              const date = new Date(Number(year), Number(month) - 1, Number(day));
+              const dateStr = entry.date.split("T")[0];
+              const [year, month, day] = dateStr.split("-");
+              const date = new Date(
+                Number(year),
+                Number(month) - 1,
+                Number(day),
+              );
               return date.toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -101,7 +111,7 @@ export default function BuildLogEntryPage() {
             {entry.build_links.map((link, index) => (
               <a
                 key={index}
-                href={link.link || '#'}
+                href={link.link || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -117,21 +127,23 @@ export default function BuildLogEntryPage() {
       {images.length > 0 && (
         <div className="mb-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {images.map(img => img || '').map((image, index) => (
-              <button
-                key={index}
-                onClick={() => openLightbox(index)}
-                className="border border-border overflow-hidden aspect-square relative hover:opacity-80 transition-opacity cursor-pointer"
-              >
-                <Image
-                  src={image}
-                  alt={`${entry.title} - Image ${index + 1}`}
-                  width={300}
-                  height={300}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
+            {images
+              .map((img) => img || "")
+              .map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => openLightbox(index)}
+                  className="border border-border overflow-hidden aspect-square relative hover:opacity-80 transition-opacity cursor-pointer"
+                >
+                  <Image
+                    src={image}
+                    alt={`${entry.title} - Image ${index + 1}`}
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
           </div>
         </div>
       )}
@@ -140,13 +152,13 @@ export default function BuildLogEntryPage() {
       <div className="mb-12">
         <div
           className="prose prose-sm font-mono max-w-none whitespace-pre-wrap [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-bold [&_em]:italic"
-          dangerouslySetInnerHTML={{ __html: entry.content || '<p></p>' }}
+          dangerouslySetInnerHTML={{ __html: entry.content || "<p></p>" }}
         />
       </div>
 
       {/* Lightbox */}
       <ImageLightbox
-        images={images.map(img => img || '')}
+        images={images.map((img) => img || "")}
         initialIndex={lightboxIndex}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}

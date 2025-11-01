@@ -32,31 +32,31 @@ export const recipes: Recipe[] = [
   {
     name: "anabolic chili",
     href: "https://www.adboio.fit/anabolic-chili",
-    emoji: '🫘'
+    emoji: "🫘",
   },
   {
     name: "chicken noodle soup",
     href: "https://www.adboio.fit/chicken-noodle-soup",
-    emoji: '🍲'
+    emoji: "🍲",
   },
   {
-    name: 'chicken salad',
-    href: 'https://www.adboio.fit/chicken-salad',
-    emoji: '🥗'
+    name: "chicken salad",
+    href: "https://www.adboio.fit/chicken-salad",
+    emoji: "🥗",
   },
   {
-    name: 'pepperoni pizza',
-    href: 'https://www.adboio.fit/pepperoni-pizza',
-    emoji: '🍕'
+    name: "pepperoni pizza",
+    href: "https://www.adboio.fit/pepperoni-pizza",
+    emoji: "🍕",
   },
   {
-    name: 'chicken chorizo breakfast burritos',
-    href: 'https://www.adboio.fit/chicken-chorizo-breakfast-burrito',
-    emoji: '🌯'
+    name: "chicken chorizo breakfast burritos",
+    href: "https://www.adboio.fit/chicken-chorizo-breakfast-burrito",
+    emoji: "🌯",
   },
   {
-    name: 'high protein mayo',
-    href: 'https://www.adboio.fit/high-protein-mayo',
-    emoji: '🫙'
-  }
+    name: "high protein mayo",
+    href: "https://www.adboio.fit/high-protein-mayo",
+    emoji: "🫙",
+  },
 ];
