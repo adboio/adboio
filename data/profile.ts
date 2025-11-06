@@ -6,7 +6,7 @@ export const profile = {
   description: "software developer & entrepreneur",
   summary:
     "i like to build stuff. here you'll find my resume, fitness data, cool digital projects, and progress on my campervan build",
-  avatarUrl: "/me.jpeg",
+  avatarUrl: "/me2.png",
   contact: {
     email: "adambowker98@gmail.com",
     tel: "+19102602599",

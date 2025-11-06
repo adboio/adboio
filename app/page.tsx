@@ -3,9 +3,9 @@
 import { FitnessSection } from "@/components/fitness-section";
 import { CampervanSection } from "@/components/campervan-section";
 import { BuildLogSection } from "@/components/buildlog-section";
+import { WorkSection } from "@/components/work-section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { profile } from "@/data/profile";
-import { work } from "@/data/work";
 import { projects } from "@/data/projects";
 import { socialLinks } from "@/data/social";
 import Link from "next/link";
@@ -32,51 +32,7 @@ export default function Home() {
       </section>
 
       {/* Work Experience */}
-      <section id="work" className="mb-12">
-        <h2 className="text-lg font-bold mb-6 uppercase tracking-wider">
-          Work Experience
-        </h2>
-        <div className="space-y-6">
-          {work.map((job) => (
-            <div key={job.company} className="border-l-2 border-border pl-4">
-              <div className="flex items-start gap-3 mb-2">
-                <div className="w-8 h-8 border border-border flex-shrink-0">
-                  <Image
-                    src={job.logoUrl}
-                    alt={job.company}
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="text-sm font-bold">
-                      {job.company}
-                      {job.badges &&
-                        job.badges.map((badge, i) => (
-                          <span
-                            key={i}
-                            className="ml-2 text-xs text-muted-foreground font-normal"
-                          >
-                            [{badge}]
-                          </span>
-                        ))}
-                    </h3>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {job.start} - {job.end ?? "Present"}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-1">
-                    {job.title}
-                  </p>
-                  <p className="text-sm leading-relaxed">{job.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <WorkSection />
 
       {/* Fitness Data */}
       <section id="fitness" className="mb-12">
