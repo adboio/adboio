@@ -11,6 +11,15 @@ export type Project = {
 
 export const projects: readonly Project[] = [
   {
+    title: "paperclip [coming soon]",
+    href: "https://github.com/paperclip-cms/supabase-cms-kit",
+    dates: "Fall 2025",
+    active: true,
+    description: "a tiny, open-soure CMS layer for Supabase",
+    technologies: [],
+    image: "/paperclip-banner2.png",
+  },
+  {
     title: "tinycounter [coming soon]",
     dates: "Fall 2025",
     active: true,
