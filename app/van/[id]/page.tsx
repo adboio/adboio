@@ -9,7 +9,6 @@ import Link from "next/link";
 
 export default function BuildLogEntryPage() {
   const params = useParams();
-  const router = useRouter();
   const [entry, setEntry] = useState<BuildLogEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);

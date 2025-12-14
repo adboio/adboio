@@ -1,7 +1,6 @@
 "use client";
 
 import { FitnessSection } from "@/components/fitness-section";
-import { CampervanSection } from "@/components/campervan-section";
 import { BuildLogSection } from "@/components/buildlog-section";
 import { WorkSection } from "@/components/work-section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

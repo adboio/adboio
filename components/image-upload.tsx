@@ -39,8 +39,6 @@ export function ImageUpload({
   onSuccess,
   onError,
 }: ImageUploadProps) {
-  const [isUploading, setIsUploading] = useState(false);
-
   const handleDrop = useCallback(
     async (acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;

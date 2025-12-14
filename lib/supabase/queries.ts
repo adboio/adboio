@@ -122,12 +122,10 @@ export async function updateBuildLogEntry(
   const supabase = createClient();
 
   // Update the main entry
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("build_log")
     .update(entry)
     .eq("id", id)
-    .select()
-    .single();
 
   if (error) {
     console.error("Error updating build log entry:", error);
