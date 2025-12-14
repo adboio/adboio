@@ -20,7 +20,11 @@ export interface UploadedImage {
 
 interface ImageUploadProps {
   images: UploadedImage[];
-  onImagesChange: (images: UploadedImage[] | ((prevImages: UploadedImage[]) => UploadedImage[])) => void;
+  onImagesChange: (
+    images:
+      | UploadedImage[]
+      | ((prevImages: UploadedImage[]) => UploadedImage[]),
+  ) => void;
   maxImages?: number;
   disabled?: boolean;
   onSuccess?: (message: string) => void;
@@ -73,7 +77,9 @@ export function ImageUpload({
             );
             // Remove invalid temp image
             onImagesChange((currentImages: UploadedImage[]) =>
-              currentImages.filter((img: UploadedImage) => img.tempId !== tempImage?.tempId),
+              currentImages.filter(
+                (img: UploadedImage) => img.tempId !== tempImage?.tempId,
+              ),
             );
             return;
           }
@@ -126,7 +132,9 @@ export function ImageUpload({
           } catch (err) {
             // Remove temporary image on error
             onImagesChange((currentImages: UploadedImage[]) =>
-              currentImages.filter((img: UploadedImage) => img.tempId !== tempImage.tempId),
+              currentImages.filter(
+                (img: UploadedImage) => img.tempId !== tempImage.tempId,
+              ),
             );
 
             onError?.(`Failed to upload ${file.name}. Please try again.`);

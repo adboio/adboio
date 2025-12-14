@@ -155,7 +155,9 @@ export function BuildLogEditor({
       : undefined;
 
   const initialContent =
-    isEditMode && existingEntry ? existingEntry.content ?? undefined : undefined;
+    isEditMode && existingEntry
+      ? (existingEntry.content ?? undefined)
+      : undefined;
 
   return (
     <RichTextEditor

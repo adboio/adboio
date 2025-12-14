@@ -8,7 +8,8 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const entryId = parseInt(id, 10);
-  const entry = entryId && !isNaN(entryId) ? await getBuildLogEntry(entryId) : null;
+  const entry =
+    entryId && !isNaN(entryId) ? await getBuildLogEntry(entryId) : null;
 
   if (!entry) {
     return {

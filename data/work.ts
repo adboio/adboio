@@ -11,6 +11,13 @@ export type Work = {
 
 export const work: readonly Work[] = [
   {
+    company: "PostHog",
+    title: "Product Engineer",
+    logoUrl: "/posthog-icon.png",
+    start: "Nov 2025",
+    description: "surveys surveys surveys surveys",
+  },
+  {
     company: "Amazon",
     title: "Software Engineer II",
     logoUrl: "/amazon.png",

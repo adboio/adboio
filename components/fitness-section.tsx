@@ -11,29 +11,28 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { macroTargets, recipes } from "@/data/fitness";
+import { recipes } from "@/data/fitness";
 import Link from "next/link";
 
 interface WeightEntry {
   date: string;
+  timestamp: number;
   weight: number;
 }
 
-interface FoodEntry {
+interface WorkoutEntry {
   date: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  description?: string;
+  type: "lift" | "climb" | null;
+  duration: number | null;
+  title: string | null;
+  description: string | null;
 }
 
 export function FitnessSection() {
   const [weightData, setWeightData] = useState<WeightEntry[]>([]);
-  const [foodData, setFoodData] = useState<FoodEntry[]>([]);
+  const [workoutData, setWorkoutData] = useState<WorkoutEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [foodLoading, setFoodLoading] = useState(true);
-  const [showDescriptionPopup, setShowDescriptionPopup] = useState(false);
+  const [workoutLoading, setWorkoutLoading] = useState(true);
 
   useEffect(() => {
     async function fetchWeight() {
@@ -47,6 +46,7 @@ export function FitnessSection() {
         setWeightData(
           data.map((row) => ({
             date: row.date,
+            timestamp: new Date(row.date).getTime(),
             weight: row.weight_value,
           })),
         );
@@ -57,34 +57,32 @@ export function FitnessSection() {
   }, []);
 
   useEffect(() => {
-    async function fetchFood() {
-      setFoodLoading(true);
+    async function fetchWorkouts() {
+      setWorkoutLoading(true);
       const supabase = createClient();
+      // Fetch last 6 months of workouts
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
       const { data, error } = await supabase
-        .from("food")
-        .select("date, calories, protein, carbs, fat, description")
+        .from("workouts")
+        .select("date, type, duration, title, description")
+        .gte("date", sixMonthsAgo.toISOString().split("T")[0])
         .order("date", { ascending: true });
       if (!error && data) {
-        setFoodData(
+        setWorkoutData(
           data.map((row) => ({
-            date: row.date,
-            calories: row.calories ?? 0,
-            protein: row.protein ?? 0,
-            carbs: row.carbs ?? 0,
-            fat: row.fat ?? 0,
+            date: row.date ?? "",
+            type: row.type,
+            duration: row.duration,
+            title: row.title,
             description: row.description,
           })),
         );
       }
-      setFoodLoading(false);
+      setWorkoutLoading(false);
     }
-    fetchFood();
+    fetchWorkouts();
   }, []);
-
-  const sortedFood = [...foodData].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-  const latestEntry = sortedFood.find((f) => f.calories && f.calories !== 0);
 
   return (
     <div className="space-y-8">
@@ -120,7 +118,14 @@ export function FitnessSection() {
                   data={weightData}
                   margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
                 >
-                  <XAxis dataKey="date" tick={false} stroke="currentColor" />
+                  <XAxis
+                    dataKey="timestamp"
+                    type="number"
+                    scale="time"
+                    domain={["dataMin", "dataMax"]}
+                    tick={false}
+                    stroke="currentColor"
+                  />
                   <YAxis
                     tick={{ fontSize: 11, fontFamily: "monospace" }}
                     domain={[190, 270]}
@@ -133,6 +138,10 @@ export function FitnessSection() {
                       fontSize: "11px",
                       border: "1px solid currentColor",
                       backgroundColor: "#ffffff",
+                    }}
+                    labelFormatter={(value) => {
+                      const date = new Date(value);
+                      return date.toLocaleDateString();
                     }}
                   />
                   <ReferenceLine
@@ -161,80 +170,15 @@ export function FitnessSection() {
           )}
         </div>
 
-        {/* Latest Macros */}
+        {/* Workout Activity */}
         <div className="border border-border p-4 pb-2">
-          <h3 className="text-sm font-bold mb-4">
-            latest macros {latestEntry && `(${latestEntry.date})`}
-          </h3>
-          {foodLoading ? (
+          <h3 className="text-sm font-bold mb-4">workout activity</h3>
+          {workoutLoading ? (
             <div className="text-center text-sm text-muted-foreground py-8">
               Loading...
             </div>
-          ) : latestEntry ? (
-            <div className="space-y-3 font-mono text-sm">
-              <MacroBar
-                label="calories"
-                value={latestEntry.calories}
-                target={macroTargets.calories}
-              />
-              <MacroBar
-                label="protein"
-                value={latestEntry.protein}
-                target={macroTargets.protein}
-              />
-              <MacroBar
-                label="carbs"
-                value={latestEntry.carbs}
-                target={macroTargets.carbs}
-              />
-              <MacroBar
-                label="fat"
-                value={latestEntry.fat}
-                target={macroTargets.fat}
-              />
-              {latestEntry.description && (
-                <div className="pt-2 text-center">
-                  <button
-                    onClick={() => setShowDescriptionPopup(true)}
-                    className="text-xs text-muted-foreground hover:text-foreground underline hover:no-underline transition-colors"
-                  >
-                    what i ate
-                  </button>
-                </div>
-              )}
-            </div>
           ) : (
-            <div className="text-center text-sm text-muted-foreground py-8">
-              No entries found
-            </div>
-          )}
-
-          {/* Description Popup */}
-          {showDescriptionPopup && latestEntry?.description && (
-            <div
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-              onClick={() => setShowDescriptionPopup(false)}
-            >
-              <div
-                className="bg-background border border-border p-6 max-w-md w-full"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-sm font-bold">
-                    what i ate ({latestEntry.date})
-                  </h4>
-                  <button
-                    onClick={() => setShowDescriptionPopup(false)}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="text-sm whitespace-pre-wrap font-mono">
-                  {latestEntry.description}
-                </div>
-              </div>
-            </div>
+            <WorkoutChart workouts={workoutData} />
           )}
         </div>
       </div>
@@ -265,31 +209,225 @@ export function FitnessSection() {
   );
 }
 
-function MacroBar({
-  label,
-  value,
-  target,
-}: {
-  label: string;
-  value: number;
-  target: number;
-}) {
-  const percentage = Math.min((value / target) * 100, 100);
+function WorkoutChart({ workouts }: { workouts: WorkoutEntry[] }) {
+  const [hoveredDay, setHoveredDay] = useState<{
+    date: string;
+    workouts: WorkoutEntry[];
+    x: number;
+    y: number;
+  } | null>(null);
+  const [selectedDay, setSelectedDay] = useState<{
+    date: string;
+    workouts: WorkoutEntry[];
+  } | null>(null);
+
+  // Build a map of dates to workouts
+  const workoutsByDate = new Map<string, WorkoutEntry[]>();
+  workouts.forEach((w) => {
+    if (w.date) {
+      const existing = workoutsByDate.get(w.date) || [];
+      existing.push(w);
+      workoutsByDate.set(w.date, existing);
+    }
+  });
+
+  // Generate last 26 weeks of dates (6 months)
+  const weeks: string[][] = [];
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 = Sunday
+
+  // Start from the beginning of the current week going back 26 weeks
+  const startDate = new Date(today);
+  startDate.setDate(startDate.getDate() - dayOfWeek - 25 * 7);
+
+  for (let week = 0; week < 26; week++) {
+    const weekDates: string[] = [];
+    for (let day = 0; day < 7; day++) {
+      const date = new Date(startDate);
+      date.setDate(date.getDate() + week * 7 + day);
+      weekDates.push(date.toISOString().split("T")[0]);
+    }
+    weeks.push(weekDates);
+  }
+
+  // Check if there's a workout on a given date
+  const hasWorkout = (date: string): boolean => {
+    const dayWorkouts = workoutsByDate.get(date);
+    return !!dayWorkouts && dayWorkouts.length > 0;
+  };
+
+  const handleMouseEnter = (
+    date: string,
+    event: React.MouseEvent<HTMLDivElement>,
+  ) => {
+    const dayWorkouts = workoutsByDate.get(date) || [];
+    const rect = event.currentTarget.getBoundingClientRect();
+    setHoveredDay({
+      date,
+      workouts: dayWorkouts,
+      x: rect.left + rect.width / 2,
+      y: rect.top,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredDay(null);
+  };
+
+  const handleClick = (date: string) => {
+    const dayWorkouts = workoutsByDate.get(date) || [];
+    if (dayWorkouts.length > 0) {
+      setSelectedDay({ date, workouts: dayWorkouts });
+    }
+  };
+
+  const monthLabels = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ];
+
+  // Find which weeks start a new month
+  const monthStarts: { week: number; month: number }[] = [];
+  let lastMonth = -1;
+  weeks.forEach((week, weekIndex) => {
+    const firstDayOfWeek = new Date(week[0]);
+    const month = firstDayOfWeek.getMonth();
+    if (month !== lastMonth) {
+      monthStarts.push({ week: weekIndex, month });
+      lastMonth = month;
+    }
+  });
+
+  // Count total workouts
+  const totalWorkouts = workouts.length;
 
   return (
-    <div>
-      <div className="flex justify-between text-xs mb-1">
-        <span>{label}</span>
-        <span className="text-muted-foreground">
-          {value}/{target}
-        </span>
+    <div className="space-y-2">
+      {/* Month labels */}
+      <div className="flex text-[10px] text-muted-foreground">
+        {monthStarts.map(({ week, month }, i) => {
+          const nextStart = monthStarts[i + 1]?.week ?? 26;
+          const width = ((nextStart - week) / 26) * 100;
+          return (
+            <div
+              key={`${month}-${week}`}
+              style={{ width: `${width}%` }}
+              className="text-left"
+            >
+              {monthLabels[month]}
+            </div>
+          );
+        })}
       </div>
-      <div className="w-full h-2 border border-border">
+
+      {/* Chart grid */}
+      <div className="flex gap-[2px]">
+        {weeks.map((week, weekIndex) => (
+          <div key={weekIndex} className="flex flex-col gap-[2px] flex-1">
+            {week.map((date) => {
+              const worked = hasWorkout(date);
+              const isFuture = new Date(date) > today;
+
+              return (
+                <div
+                  key={date}
+                  className={`aspect-square w-full border transition-colors ${
+                    isFuture
+                      ? "border-border/30 bg-transparent"
+                      : worked
+                        ? "border-background bg-foreground cursor-pointer"
+                        : "border-border bg-transparent"
+                  }`}
+                  onMouseEnter={(e) => !isFuture && handleMouseEnter(date, e)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => !isFuture && worked && handleClick(date)}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* Stats */}
+      <div className="text-[10px] text-muted-foreground pt-1">
+        <span>{totalWorkouts} workouts in last 6 months</span>
+      </div>
+
+      {/* Tooltip */}
+      {hoveredDay && (
         <div
-          className="h-full bg-foreground transition-all"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
+          className="fixed z-50 pointer-events-none"
+          style={{
+            left: hoveredDay.x,
+            top: hoveredDay.y - 8,
+            transform: "translate(-50%, -100%)",
+          }}
+        >
+          <div className="bg-background border border-border px-2 py-1 text-xs whitespace-nowrap">
+            <div className="font-bold">{hoveredDay.date}</div>
+            {hoveredDay.workouts.length === 0 ? (
+              <div className="text-muted-foreground">no workout</div>
+            ) : (
+              hoveredDay.workouts.map((w, i) => (
+                <div key={i}>
+                  {w.title || w.type || "workout"}
+                  {w.duration && ` (${w.duration}min)`}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Workout Details Popup */}
+      {selectedDay && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedDay(null)}
+        >
+          <div
+            className="bg-background border border-border p-6 max-w-md w-full relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedDay(null)}
+              className="text-muted-foreground hover:text-foreground p-1"
+              style={{ position: "absolute", top: "8px", right: "8px" }}
+            >
+              ✕
+            </button>
+            <div className="space-y-4">
+              {selectedDay.workouts.map((w, i) => (
+                <div key={i} className="text-sm font-mono">
+                  <div className="font-bold">
+                    {w.title || w.type || "workout"}
+                    {w.duration && (
+                      <span className="font-normal text-muted-foreground ml-2">
+                        ({w.duration} min)
+                      </span>
+                    )}
+                  </div>
+                  {w.description && (
+                    <div className="mt-1 whitespace-pre-wrap text-muted-foreground">
+                      {w.description}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
