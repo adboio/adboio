@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { getBuildLogEntry, type BuildLogEntry } from "@/lib/supabase/queries";
 import { ImageLightbox } from "@/components/image-lightbox";
 import Image from "next/image";
